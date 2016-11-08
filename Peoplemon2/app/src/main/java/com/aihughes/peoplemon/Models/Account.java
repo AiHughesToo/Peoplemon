@@ -44,16 +44,25 @@ public class Account {
         @SerializedName("LastCheckInDateTime")
         private String lastCheckIn;
 
+        @SerializedName("access_token")
+        private String access_token;
 
-    public Account(String email, String fullName, String avatarBase64, String apiKey, String password) {
+        @SerializedName(".expires")
+        private Date expires;
+
+
+    public Account(String avatarBase64, String apiKey, String fullName, String email, String password) {
         this.email = email;
         this.fullName = fullName;
         this.avatarBase64 = avatarBase64;
         this.apiKey = apiKey;
         this.password = password;
     }
+    public Account(){
 
-    public Account(String email, String fullName) {
+    }
+
+    public Account(String grantType, String email, String fullName) {
         this.email = email;
         this.fullName = fullName;
     }
@@ -149,5 +158,25 @@ public class Account {
 
     public void setLastCheckIn(String lastCheckIn) {
         this.lastCheckIn = lastCheckIn;
+    }
+
+    public String getToken() {return access_token;}
+
+    public void setToken(String token) {this.access_token = token;}
+
+    public Date getExpires() {
+        return expires;
+    }
+
+    public void setExpires(Date expires) {
+        this.expires = expires;
+    }
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
     }
 }

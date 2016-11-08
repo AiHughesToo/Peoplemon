@@ -20,7 +20,7 @@ public class UserStore {
         return ourInstance;
     }
 
-    private SharedPreferences sharedPrefs = PeoplemonApplication.getInstance().getSharedPreferences("BudgetPrefs",Context.MODE_PRIVATE);
+    private SharedPreferences sharedPrefs = PeoplemonApplication.getInstance().getSharedPreferences("PeoplemonPrefs",Context.MODE_PRIVATE);
 
     public String getToken(){
         String theToken = sharedPrefs.getString(Constants.token, null);

@@ -2,7 +2,7 @@ package com.aihughes.peoplemon;
 
 import android.app.Application;
 
-import com.aihughes.peoplemon.Stages.MapViewStage;
+import com.aihughes.peoplemon.Stages.MapsViewStage;
 
 import flow.Flow;
 import flow.History;
@@ -13,10 +13,10 @@ import flow.History;
 
 public class PeoplemonApplication extends Application {
     private static PeoplemonApplication application;
-    public final Flow mainFlow = new Flow(History.single(new MapViewStage()));
+    public final Flow mainFlow = new Flow(History.single(new MapsViewStage()));
 
     public static final String API_BASE_URL = "https://efa-peoplemon-api.azurewebsites.net/";
-
+   //public static final String API_BASE_URL = "https://efa-peoplemon-api.azurewebsites.net/swagger/ui/index#/";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,8 +30,6 @@ public class PeoplemonApplication extends Application {
         return application;
     }
 
-    public static Flow getMainFlow(){
-        return getInstance().mainFlow;
-    }
+    public static Flow getMainFlow(){return getInstance().mainFlow;}
 
 }

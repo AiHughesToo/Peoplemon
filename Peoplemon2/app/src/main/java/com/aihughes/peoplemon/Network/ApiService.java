@@ -4,6 +4,8 @@ import com.aihughes.peoplemon.Models.Account;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -15,11 +17,15 @@ import retrofit2.http.Path;
 public interface ApiService {
 
 
-    @POST("register")
-    Call<Account> register(@Body Account account);
+    @POST("/api/Account/Register")
+    Call<Void> register(@Body Account account);
 
-    @POST("auth")
-    Call<Account> login(@Body Account account);
+    @FormUrlEncoded
+    @POST("/token")
+    Call<Account>login(@Field(value = "grant_type", encoded = true) String grant_type,
+                       @Field(value = "username", encoded = true) String username,
+                       @Field(value = "password", encoded = true) String password);
+
 
 
 }

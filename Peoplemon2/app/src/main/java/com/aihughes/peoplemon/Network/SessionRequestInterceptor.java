@@ -19,7 +19,7 @@ public class SessionRequestInterceptor implements Interceptor {
 
         if (UserStore.getInstance().getToken() != null){
             Request.Builder builder = request.newBuilder();
-            builder.header("Authorization", "Bearer " + UserStore.getInstance().getToken());
+            builder.header("Authorization", "bearer " + UserStore.getInstance().getToken());
             request = builder.build();
 
         }
