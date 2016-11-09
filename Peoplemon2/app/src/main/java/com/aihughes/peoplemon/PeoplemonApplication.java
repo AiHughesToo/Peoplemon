@@ -16,7 +16,7 @@ public class PeoplemonApplication extends Application {
     public final Flow mainFlow = new Flow(History.single(new MapsViewStage()));
 
     public static final String API_BASE_URL = "https://efa-peoplemon-api.azurewebsites.net/";
-   //public static final String API_BASE_URL = "https://efa-peoplemon-api.azurewebsites.net/swagger/ui/index#/";
+
     @Override
     public void onCreate() {
         super.onCreate();

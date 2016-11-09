@@ -105,9 +105,10 @@ public class LoginView extends LinearLayout {
 
                         Account authUser = response.body();
 
+
                         //set auth token and expiration date
                         UserStore.getInstance().setToken(authUser.getToken());
-                       UserStore.getInstance().setTokenExpiration(authUser.getExpires());
+                        UserStore.getInstance().setTokenExpiration(authUser.getExpires());
 
                         Log.d("****", UserStore.getInstance().getToken().toString());
 

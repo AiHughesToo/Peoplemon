@@ -58,6 +58,8 @@ public class Account {
         this.apiKey = apiKey;
         this.password = password;
     }
+
+
     public Account(){
 
     }
