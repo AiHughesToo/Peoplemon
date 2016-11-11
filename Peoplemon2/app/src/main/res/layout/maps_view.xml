@@ -28,7 +28,7 @@
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkIn_Button"
+            android:id="@+id/nearby_Button"
             app:fabSize="normal"
             android:clickable="true"
             android:layout_gravity="bottom|end"

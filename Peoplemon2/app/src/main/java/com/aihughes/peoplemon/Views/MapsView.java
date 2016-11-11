@@ -29,6 +29,7 @@ import com.aihughes.peoplemon.PeoplemonApplication;
 import com.aihughes.peoplemon.R;
 import com.aihughes.peoplemon.Stages.CaughtPeopleListStage;
 import com.aihughes.peoplemon.Stages.MapsViewStage;
+import com.aihughes.peoplemon.Stages.NearbyPeopleListStage;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
@@ -145,19 +146,27 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
                             != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
                             Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     }
+                    mMap.setMyLocationEnabled(true);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Home,17));
 
-                    String encodedImage = authUser.getAvatarBase64();
-                    byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    decodedByte = Bitmap.createScaledBitmap(decodedByte, 160, 160, false);
-                    myIcon = decodedByte;
+                    if (authUser.getAvatarBase64() == null || authUser.getAvatarBase64().length() <= 100){
+                        Toast.makeText(context, "You Need To Set An Avatar", Toast.LENGTH_SHORT).show();
 
-                    mMap.setMyLocationEnabled(true);
-                    mMap.addMarker(new MarkerOptions()
-                            .position(Home)
-                            .title("Me")
-                            .icon(BitmapDescriptorFactory.fromBitmap(decodedByte)));
+                    }else {
+
+                        String encodedImage = authUser.getAvatarBase64();
+                        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        decodedByte = Bitmap.createScaledBitmap(decodedByte, 160, 160, false);
+                        myIcon = decodedByte;
+
+
+                        mMap.addMarker(new MarkerOptions()
+                                .position(Home)
+                                .title("Me")
+                                .icon(BitmapDescriptorFactory.fromBitmap(decodedByte)));
+
+                    }
 
 
                     GroundOverlayOptions radar = new GroundOverlayOptions()
@@ -255,15 +264,21 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
             Home = new LatLng(lat, lng);
             mLocation = location;
             String pos = Home +"";
-
+// move the camera to the new position
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Home,17));
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
 
-            mMap.addMarker(new MarkerOptions()
-                    .position(Home)
-                    .title("Me")
-                    .icon(BitmapDescriptorFactory.fromBitmap(myIcon)));
+            if (myIcon == null){
+                Toast.makeText(context, "You Need To Set An Avatar", Toast.LENGTH_SHORT).show();
 
+            }else {
+                mMap.addMarker(new MarkerOptions()
+                        .position(Home)
+                        .title("Me")
+                        .icon(BitmapDescriptorFactory.fromBitmap(myIcon)));
+
+            }
+//       this sets the radar image as an overlay
             GroundOverlayOptions radar = new GroundOverlayOptions()
                     .image(BitmapDescriptorFactory.fromResource(R.mipmap.radar))
                     .position(Home, 200f, 200f);
@@ -515,6 +530,17 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
         Flow flow = PeoplemonApplication.getMainFlow();
         History newHistory = flow.getHistory().buildUpon()
                 .push(new CaughtPeopleListStage())
+                .build();
+        flow.setHistory(newHistory, Flow.Direction.FORWARD);
+
+    }
+    @OnClick(R.id.nearby_Button)
+    public void showNearby(){
+
+        //Magical code for switching between stages
+        Flow flow = PeoplemonApplication.getMainFlow();
+        History newHistory = flow.getHistory().buildUpon()
+                .push(new NearbyPeopleListStage())
                 .build();
         flow.setHistory(newHistory, Flow.Direction.FORWARD);
 

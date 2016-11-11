@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 }else{
-                    Toast.makeText(context,"Get User Info Failed" + ": " + response.code(), Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(context,"Get User Info Failed" + ": " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
