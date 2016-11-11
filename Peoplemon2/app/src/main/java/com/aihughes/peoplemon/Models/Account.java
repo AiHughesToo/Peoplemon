@@ -29,17 +29,17 @@ public class Account {
         @SerializedName("HasRegistered")
         private Boolean hasRegistered;
 
-        @SerializedName("LoginPrivider")
-        private String loginProvided;
+        @SerializedName("LoginProvider")
+        private String loginProvider;
 
         @SerializedName("Id")
         private String id;
 
         @SerializedName("LastCheckInLongitude")
-        private Integer lastLng;
+        private Double lastLng;
 
         @SerializedName("LastCheckInLatitude")
-        private Integer lastLat;
+        private Double lastLat;
 
         @SerializedName("LastCheckInDateTime")
         private String lastCheckIn;
@@ -50,6 +50,28 @@ public class Account {
         @SerializedName(".expires")
         private Date expires;
 
+        @SerializedName("Latitude")
+        private double lat;
+
+         @SerializedName("Longitude")
+         private double lng;
+
+    public Account(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    public Account(String ID, String Email, Boolean HasRegistered, String LoginProvider, String FullName, String AvatarBase64, Double LastCheckInLongitude, Double LastCheckInLatitude, String LastCheckInDateTime) {
+        this.id = ID;
+        this.email = Email;
+        this.hasRegistered = HasRegistered;
+        this.loginProvider = LoginProvider;
+        this.fullName = FullName;
+        this.avatarBase64 = AvatarBase64;
+        this.lastLng = LastCheckInLongitude;
+        this.lastLat = LastCheckInLatitude;
+        this.lastCheckIn = LastCheckInDateTime;
+    }
 
     public Account(String avatarBase64, String apiKey, String fullName, String email, String password) {
         this.email = email;
@@ -64,14 +86,16 @@ public class Account {
 
     }
 
+
     public Account(String grantType, String email, String fullName) {
         this.email = email;
         this.fullName = fullName;
     }
 
-    public Account(Integer lastLng, Integer lastLat) {
-        this.lastLng = lastLng;
-        this.lastLat = lastLat;
+
+    public Account(String avatarBase64, String fullName) {
+        this.avatarBase64 = avatarBase64;
+        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -123,11 +147,11 @@ public class Account {
     }
 
     public String getLoginProvided() {
-        return loginProvided;
+        return loginProvider;
     }
 
     public void setLoginProvided(String loginProvided) {
-        this.loginProvided = loginProvided;
+        this.loginProvider = loginProvided;
     }
 
     public String getId() {
@@ -138,19 +162,19 @@ public class Account {
         this.id = id;
     }
 
-    public Integer getLastLng() {
+    public Double getLastLng() {
         return lastLng;
     }
 
-    public void setLastLng(Integer lastLng) {
+    public void setLastLng(Double lastLng) {
         this.lastLng = lastLng;
     }
 
-    public Integer getLastLat() {
+    public Double getLastLat() {
         return lastLat;
     }
 
-    public void setLastLat(Integer lastLat) {
+    public void setLastLat(Double lastLat) {
         this.lastLat = lastLat;
     }
 
@@ -180,5 +204,21 @@ public class Account {
 
     public void setAccess_token(String access_token) {
         this.access_token = access_token;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

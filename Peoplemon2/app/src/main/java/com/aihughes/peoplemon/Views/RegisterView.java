@@ -103,10 +103,6 @@ public class RegisterView extends LinearLayout {
 
                     if (response.isSuccessful()) {
 
-                        //This will run if everything comes back good and sets the users token and expiration
-                 //   Account regUser = response.body();
-                   // UserStore.getInstance().setToken(regUser.getToken());
-//                    UserStore.getInstance().setTokenExpiration(regUser.getExpiration());
 
                         //This will set up the flow of the application to show the next view upon successful registration
                         Flow flow = PeoplemonApplication.getMainFlow();
