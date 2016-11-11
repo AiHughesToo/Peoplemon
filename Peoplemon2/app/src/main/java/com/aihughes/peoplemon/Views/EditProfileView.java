@@ -82,12 +82,6 @@ public class EditProfileView extends RelativeLayout{
 
         if (Build.VERSION.SDK_INT >= 23) {
 
-//            if (!(ContextCompat.checkSelfPermission(context,
-//                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-//                    PackageManager.PERMISSION_GRANTED)) {
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-//            }
 
             if (!(ContextCompat.checkSelfPermission(context,
                     Manifest.permission.READ_EXTERNAL_STORAGE) ==

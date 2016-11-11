@@ -75,7 +75,7 @@ public class LoginView extends LinearLayout {
 
     @OnClick(R.id.login_button)
     public void login(){
-        Log.d("****", "LoginClicked");
+
         InputMethodManager imm = (InputMethodManager)context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(fullNameField.getWindowToken(), 0);

@@ -526,7 +526,7 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
     @OnClick(R.id.view_caught_button)
     public void showAddCategoryView(){
 
-        //Magical code for switching between stages
+
         Flow flow = PeoplemonApplication.getMainFlow();
         History newHistory = flow.getHistory().buildUpon()
                 .push(new CaughtPeopleListStage())
@@ -537,7 +537,7 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
     @OnClick(R.id.nearby_Button)
     public void showNearby(){
 
-        //Magical code for switching between stages
+
         Flow flow = PeoplemonApplication.getMainFlow();
         History newHistory = flow.getHistory().buildUpon()
                 .push(new NearbyPeopleListStage())

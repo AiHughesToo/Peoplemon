@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                // Is the server response between 200 to 299
+
                 if (response.isSuccessful()){
 
 
