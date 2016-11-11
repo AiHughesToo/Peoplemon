@@ -77,6 +77,9 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
         private double lat = 37.816380;
         private double lng = -82.809195;
         public static Location mLocation;
+        public Bitmap myIcon;
+
+
 
 
         @Bind(R.id.map)
@@ -119,54 +122,89 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMyLocationChangeListener(myLocationChangeListener);
-        mLocation = new Location("");
+        RestClient restClient = new RestClient();
+        restClient.getApiService().getUserInfo().enqueue(new Callback<Account>() {
 
-        mLocation.setLatitude(lat);
-        mLocation.setLongitude(lng);
-        checkin();
-
-        Toast.makeText(context, "Map loaded", Toast.LENGTH_SHORT).show();
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Home,17));
-
-        mMap.setMyLocationEnabled(true);
-
-
-// this allows us to add and image to the map.
-        GroundOverlayOptions radar = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromResource(R.mipmap.radar))
-                .position(Home, 200f, 200f);
-
-        GroundOverlay imageOverlay = mMap.addGroundOverlay(radar);
-        // this animates a circle for the radar.
-        final Circle circle = mMap.addCircle(new CircleOptions().center(Home)
-                .strokeColor(Color.BLUE).radius(80));
-
-        ValueAnimator vAnimator = new ValueAnimator();
-        vAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        vAnimator.setRepeatMode(ValueAnimator.RESTART);
-        vAnimator.setIntValues(80, 0);
-        vAnimator.setDuration(2000);
-        vAnimator.setEvaluator(new IntEvaluator());
-        vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                float animatedFraction = valueAnimator.getAnimatedFraction();
-                // Log.e("", "" + animatedFraction);
-                circle.setRadius(animatedFraction * 80);
+            public void onResponse(Call<Account> call, Response<Account> response) {
+
+                // Is the server response between 200 to 299
+                if (response.isSuccessful()){
+
+                    Account authUser = response.body();
+                    mMap.setOnMyLocationChangeListener(myLocationChangeListener);
+                    mLocation = new Location("");
+
+                    mLocation.setLatitude(lat);
+                    mLocation.setLongitude(lng);
+                    checkin();
+
+                    Toast.makeText(context, "Map loaded", Toast.LENGTH_SHORT).show();
+
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
+                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    }
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Home,17));
+
+                    String encodedImage = authUser.getAvatarBase64();
+                    byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    decodedByte = Bitmap.createScaledBitmap(decodedByte, 160, 160, false);
+                    myIcon = decodedByte;
+
+                    mMap.setMyLocationEnabled(true);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(Home)
+                            .title("Me")
+                            .icon(BitmapDescriptorFactory.fromBitmap(decodedByte)));
+
+
+                    GroundOverlayOptions radar = new GroundOverlayOptions()
+                            .image(BitmapDescriptorFactory.fromResource(R.mipmap.radar))
+                            .position(Home, 200f, 200f);
+
+                    GroundOverlay imageOverlay = mMap.addGroundOverlay(radar);
+                    // this animates a circle for the radar.
+                    final Circle circle = mMap.addCircle(new CircleOptions().center(Home)
+                            .strokeColor(Color.BLUE).radius(80));
+
+                    ValueAnimator vAnimator = new ValueAnimator();
+                    vAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                    vAnimator.setRepeatMode(ValueAnimator.RESTART);
+                    vAnimator.setIntValues(80, 0);
+                    vAnimator.setDuration(2000);
+                    vAnimator.setEvaluator(new IntEvaluator());
+                    vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                    vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                            float animatedFraction = valueAnimator.getAnimatedFraction();
+                            // Log.e("", "" + animatedFraction);
+                            circle.setRadius(animatedFraction * 80);
+                        }
+                    });
+                    vAnimator.start();
+
+
+
+
+
+                }else{
+
+                    Toast.makeText(context,"Get User Info Failed" + ": " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+                Toast.makeText(context,"Get User Info Call Failed", Toast.LENGTH_LONG).show();
             }
         });
-        vAnimator.start();
+
         checkin();
         checkNearby();
 
-
-        // Lets Check in
 
 
     }
@@ -221,6 +259,11 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Home,17));
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
 
+            mMap.addMarker(new MarkerOptions()
+                    .position(Home)
+                    .title("Me")
+                    .icon(BitmapDescriptorFactory.fromBitmap(myIcon)));
+
             GroundOverlayOptions radar = new GroundOverlayOptions()
                     .image(BitmapDescriptorFactory.fromResource(R.mipmap.radar))
                     .position(Home, 200f, 200f);
@@ -245,6 +288,9 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
                 }
             });
             vAnimator.start();
+
+
+
             checkin();
 
             // Lets Check in
@@ -285,7 +331,7 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
 
     public void checkNearby() {
         RestClient restClient = new RestClient();
-        restClient.getApiService().findNearby(200).enqueue(new Callback<User[]>() {
+        restClient.getApiService().findNearby(600).enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
@@ -294,11 +340,11 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
                         lng = user.getLng();
                         String userId = user.getId();
 
-                        if (user.getAvatarBase64() == null){
+                        if (user.getAvatarBase64() == null || user.getAvatarBase64().length() <= 100){
 
                             final LatLng userpos = new LatLng(lat, lng);
                             mMap.addMarker(new MarkerOptions().title(user.getUserName())
-                                    //  .icon(BitmapDescriptorFactory.fromBitmap(decodedByte))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.no_pic2))
                                     .snippet(user.getId())
                                     .position(userpos));
                             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
@@ -318,7 +364,7 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
                                     LatLng markCircle = new LatLng(latC, lngC);
 
                                     final Circle circle = mMap.addCircle(new CircleOptions().center(markCircle)
-                                            .strokeColor(Color.RED).radius(10));
+                                            .strokeColor(Color.GREEN).radius(10));
                                     ValueAnimator vAnimator = new ValueAnimator();
 
                                     vAnimator.setRepeatCount(1);
@@ -345,7 +391,7 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
 
                                                 Toast.makeText(context, "Person Caught!", Toast.LENGTH_SHORT).show();
                                             }else{
-                                                Toast.makeText(context,"That person is out side your radius", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context,"Catch Failed", Toast.LENGTH_LONG).show();
 
                                             }
                                         }
@@ -357,23 +403,31 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
                                         }
                                     });
 
-                                    //     marker.remove();
+                                         marker.remove();
                                     return false;
                                 }
 
 
                             });
                         }else{
+                            try {
 
-                            String encodedImage = user.getAvatarBase64();
-                            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                String encodedImage = user.getAvatarBase64();
+                                byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                decodedByte = Bitmap.createScaledBitmap(decodedByte, 120, 120, false);
+
+
 
                             final LatLng userpos = new LatLng(lat, lng);
                             mMap.addMarker(new MarkerOptions().title(user.getUserName())
-                                    .icon(BitmapDescriptorFactory.fromBitmap(decodedByte))
+                                   .icon(BitmapDescriptorFactory.fromBitmap(decodedByte))
                                     .snippet(user.getId())
                                     .position(userpos));
+
+                            }catch (Exception e){
+
+                            }
                             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
 
@@ -430,7 +484,7 @@ public class MapsView extends RelativeLayout implements OnMapReadyCallback,
                                         }
                                     });
 
-                                    //     marker.remove();
+                                       marker.remove();
                                     return false;
                                 }
 
